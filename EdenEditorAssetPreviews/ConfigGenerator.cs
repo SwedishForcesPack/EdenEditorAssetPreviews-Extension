@@ -34,10 +34,12 @@ namespace EdenEditorAssetPreviews
             builder.AppendLine("  class AssetPreviews");
             builder.AppendLine("  {");
             builder.AppendLine("    requiredVersion = 1.60;");
+            builder.AppendLine("    requiredAddons[] = {");
             if (_patches.Count() > 0)
             {
-                builder.AppendLine("    requiredAddons[] = {\"" + String.Join("\",\"", _patches.ToArray()) + "\"};");
+                builder.AppendLine("      \"" + String.Join("\",\n      \"", _patches.ToArray()) + "\"");
             }
+            builder.AppendLine("    };");
             builder.AppendLine("  };");
             builder.AppendLine("};");
             return builder.ToString();
