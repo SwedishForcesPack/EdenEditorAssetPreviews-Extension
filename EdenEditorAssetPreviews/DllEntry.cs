@@ -1,0 +1,110 @@
+﻿using RGiesecke.DllExport;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+
+namespace EdenEditorAssetPreviews
+{
+    public class DllEntry
+    {
+        private static ClassesManager _classesManager;
+        private static string _outputPath;
+        private static string _prefix;
+
+        /// <summary>
+        /// Hook for Arma.</summary>
+        /// <remarks>
+        /// The following calls are allowed:
+        /// - init
+        /// - addClass;newClass;inheritedClass
+        /// - setOutput:outputPath</remarks>
+        [DllExport("_RVExtension@12", CallingConvention = System.Runtime.InteropServices.CallingConvention.Winapi)]
+        public static void RVExtension(StringBuilder output, int outputSize, [MarshalAs(UnmanagedType.LPStr)] string function)
+        {
+            string response = "";
+
+            string[] args = function.Split(';');
+            string method = args[0];
+
+            switch (method)
+            {
+                case "init":
+                    {
+                        _classesManager = new ClassesManager();
+                        response = "initialized";
+                        break;
+                    }
+                case "addClass":
+                    {
+                        var newClass = args[1];
+                        var inheritedClass = args[2];
+                        _classesManager.AddClass(newClass, inheritedClass);
+                        response = "added class: " + newClass;
+                        break;
+                    }
+                case "setOutput":
+                    {
+                        if (args.Length < 2)
+                        {
+                            response = "No output path defined";
+                            break;
+                        }
+
+                        _outputPath = args[1];
+                        break;
+                    }
+                case "setPrefix":
+                    {
+                        if (args.Length < 2)
+                        {
+                            response = "No prefix defined";
+                            break;
+                        }
+
+                        _prefix = args[1];
+                        break;
+                    }
+                case "process":
+                    {
+                        if (_classesManager == null)
+                        {
+                            response = "Extension not initialized";
+                            break;
+                        }
+
+                        if (_outputPath == null)
+                        {
+                            response = "No output path defined";
+                            break;
+                        }
+
+                        if (_prefix == null)
+                        {
+                            response = "No prefix defined";
+                            break;
+                        }
+
+                        ConfigGenerator configGenerator = new ConfigGenerator(_classesManager.GetClasses(), _prefix);
+                        File.WriteAllText(
+                            Path.Combine(_outputPath, "config.cpp"),
+                            configGenerator.ToString()
+                        );
+                        response = "saved classes as config.cpp";
+                        break;
+                    }
+                case "version":
+                    {
+                        response = "1.0";
+                        break;
+                    }
+                default:
+                    {
+                        response = "unhandled method " + method;
+                        break;
+                    }
+            }
+
+            output.Append(response);
+        }
+    }
+}
