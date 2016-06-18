@@ -9,6 +9,8 @@ namespace EdenEditorAssetPreviews
     {
         private static ClassesManager _classesManager;
         private static ImagesManager _imagesManager;
+
+        private static string _mod;
         private static string _outputPath;
         private static string _prefix;
 
@@ -42,6 +44,17 @@ namespace EdenEditorAssetPreviews
                         var inheritedClass = args[2];
                         _classesManager.AddClass(newClass, inheritedClass);
                         response = "added class: " + newClass;
+                        break;
+                    }
+                case "setMod":
+                    {
+                        if (args.Length < 2)
+                        {
+                            response = "No mod defined";
+                            break;
+                        }
+
+                        _mod = args[1];
                         break;
                     }
                 case "setOutput":
@@ -91,6 +104,12 @@ namespace EdenEditorAssetPreviews
                             break;
                         }
 
+                        if (_mod == null)
+                        {
+                            response = "No mod defined";
+                            break;
+                        }
+
                         if (_outputPath == null)
                         {
                             response = "No output path defined";
@@ -112,7 +131,7 @@ namespace EdenEditorAssetPreviews
                             Path.Combine(_outputPath, "config.cpp"),
                             configGenerator.ToString()
                         );
-                        _imagesManager.ProcessImages("@sfp", imagesPath);
+                        _imagesManager.ProcessImages(_mod, imagesPath);
                         response = "saved classes as config.cpp";
                         break;
                     }

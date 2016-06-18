@@ -19,11 +19,11 @@ namespace EdenEditorAssetPreviews
 
         }
 
-        public void ProcessImages(string dlc, string outputPath)
+        public void ProcessImages(string mod, string outputPath)
         {
-            var dlcDirectory = Path.Combine(EditorPreviewsPath(), dlc);
+            var modDirectory = Path.Combine(EditorPreviewsPath(), mod);
 
-            var images = Directory.EnumerateFiles(dlcDirectory);
+            var images = Directory.EnumerateFiles(modDirectory);
 
             foreach (string image in images)
             {
