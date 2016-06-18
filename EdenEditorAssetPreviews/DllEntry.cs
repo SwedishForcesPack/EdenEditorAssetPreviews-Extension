@@ -57,7 +57,7 @@ namespace EdenEditorAssetPreviews
                         _mod = args[1];
                         break;
                     }
-                case "setOutput":
+                case "setOutputPath":
                     {
                         if (args.Length < 2)
                         {
