@@ -38,6 +38,13 @@ namespace EdenEditorAssetPreviews
                         response = "initialized";
                         break;
                     }
+                case "addAddon":
+                    {
+                        var newAddon = args[1];
+                        _classesManager.AddAddon(newAddon);
+                        response = "added addon: " + newAddon;
+                        break;
+                    }
                 case "addClass":
                     {
                         var newClass = args[1];
@@ -125,7 +132,7 @@ namespace EdenEditorAssetPreviews
                         var imagesPath = Path.Combine(_outputPath, "ui");
                         Directory.CreateDirectory(_outputPath);
 
-                        ConfigGenerator configGenerator = new ConfigGenerator(_classesManager.GetClasses(), _prefix);
+                        ConfigGenerator configGenerator = new ConfigGenerator(_classesManager.GetAddons(), _classesManager.GetClasses(), _prefix);
                         File.WriteAllText(
                             Path.Combine(_outputPath, "config.cpp"),
                             configGenerator.ToString()
