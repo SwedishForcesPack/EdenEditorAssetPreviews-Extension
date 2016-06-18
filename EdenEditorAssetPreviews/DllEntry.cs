@@ -137,7 +137,6 @@ namespace EdenEditorAssetPreviews
                             Path.Combine(_outputPath, "config.cpp"),
                             configGenerator.ToString()
                         );
-                        _imagesManager.ProcessImages(_mod, imagesPath);
                         response = "saved classes as config.cpp";
                         break;
                     }
