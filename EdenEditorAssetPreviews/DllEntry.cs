@@ -8,6 +8,7 @@ namespace EdenEditorAssetPreviews
     public class DllEntry
     {
         private static ClassesManager _classesManager;
+        private static ImagesManager _imagesManager;
         private static string _outputPath;
         private static string _prefix;
 
@@ -31,6 +32,7 @@ namespace EdenEditorAssetPreviews
                 case "init":
                     {
                         _classesManager = new ClassesManager();
+                        _imagesManager = new ImagesManager();
                         response = "initialized";
                         break;
                     }
@@ -64,6 +66,23 @@ namespace EdenEditorAssetPreviews
                         _prefix = args[1];
                         break;
                     }
+                case "setProfileName":
+                    {
+                        if (args.Length < 2)
+                        {
+                            response = "No profile name defined";
+                            break;
+                        }
+
+                        if (_imagesManager == null)
+                        {
+                            response = "Extension not initialized";
+                            break;
+                        }
+
+                        _imagesManager.ProfileName = args[1];
+                        break;
+                    }
                 case "process":
                     {
                         if (_classesManager == null)
@@ -84,11 +103,16 @@ namespace EdenEditorAssetPreviews
                             break;
                         }
 
+                        var imagesPath = Path.Combine(_outputPath, "ui");
+                        Directory.CreateDirectory(_outputPath);
+                        Directory.CreateDirectory(imagesPath);
+
                         ConfigGenerator configGenerator = new ConfigGenerator(_classesManager.GetClasses(), _prefix);
                         File.WriteAllText(
                             Path.Combine(_outputPath, "config.cpp"),
                             configGenerator.ToString()
                         );
+                        _imagesManager.ProcessImages("@sfp", imagesPath);
                         response = "saved classes as config.cpp";
                         break;
                     }

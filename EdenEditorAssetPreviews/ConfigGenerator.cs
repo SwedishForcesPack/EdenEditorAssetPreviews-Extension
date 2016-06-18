@@ -24,7 +24,7 @@ namespace EdenEditorAssetPreviews
             {
                 builder.AppendLine("  class " + klass);
                 builder.AppendLine("  {");
-                builder.AppendLine("    editorPreview = \"" + _prefix + "\\" + klass + ".jpg\";");
+                builder.AppendLine("    editorPreview = \"" + _prefix + "\\ui\\" + klass + ".jpg\";");
                 builder.AppendLine("  };");
             }
     
