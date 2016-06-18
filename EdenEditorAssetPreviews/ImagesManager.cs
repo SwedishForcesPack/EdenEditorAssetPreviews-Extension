@@ -32,6 +32,7 @@ namespace EdenEditorAssetPreviews
                 try
                 {
                     ProcessImage(image, destination);
+                    File.Delete(image);
                 } catch
                 {
 

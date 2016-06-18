@@ -96,7 +96,7 @@ namespace EdenEditorAssetPreviews
                         _imagesManager.ProfileName = args[1];
                         break;
                     }
-                case "process":
+                case "processConfig":
                     {
                         if (_classesManager == null)
                         {
@@ -124,7 +124,6 @@ namespace EdenEditorAssetPreviews
 
                         var imagesPath = Path.Combine(_outputPath, "ui");
                         Directory.CreateDirectory(_outputPath);
-                        Directory.CreateDirectory(imagesPath);
 
                         ConfigGenerator configGenerator = new ConfigGenerator(_classesManager.GetClasses(), _prefix);
                         File.WriteAllText(
@@ -133,6 +132,34 @@ namespace EdenEditorAssetPreviews
                         );
                         _imagesManager.ProcessImages(_mod, imagesPath);
                         response = "saved classes as config.cpp";
+                        break;
+                    }
+                case "processImages":
+                    {
+                        if (_imagesManager == null)
+                        {
+                            response = "Extension not initialized";
+                            break;
+                        }
+
+                        if (_mod == null)
+                        {
+                            response = "No mod defined";
+                            break;
+                        }
+
+                        if (_outputPath == null)
+                        {
+                            response = "No output path defined";
+                            break;
+                        }
+
+                        var imagesPath = Path.Combine(_outputPath, "ui");
+                        Directory.CreateDirectory(_outputPath);
+                        Directory.CreateDirectory(imagesPath);
+
+                        _imagesManager.ProcessImages(_mod, imagesPath);
+                        response = "processed images";
                         break;
                     }
                 case "version":
