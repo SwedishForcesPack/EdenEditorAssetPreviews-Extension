@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EdenEditorAssetPreviews
 {
@@ -24,7 +25,30 @@ namespace EdenEditorAssetPreviews
 
         public IEnumerable<ConfigClass> GetClasses()
         {
-            return _classes;
+            var resolvedClasses = new HashSet<string>(GetExternalReferences());
+            var classesToResolve = new List<ConfigClass>(_classes);
+            var orderedClasses = new List<ConfigClass>();
+
+            while (classesToResolve.Count > 0)
+            {
+                foreach (var configClass in classesToResolve)
+                {
+                    if (resolvedClasses.Contains(configClass.Inherits))
+                    {
+                        orderedClasses.Add(configClass);
+                        resolvedClasses.Add(configClass.Name);
+                    }
+                }
+
+                int processedClasses = classesToResolve.RemoveAll(x => orderedClasses.Contains(x));
+
+                if (processedClasses == 0)
+                {
+                    throw new Exception("No classes could be resolved");
+                }
+            }
+
+            return orderedClasses;
         }
 
         public IEnumerable<string> GetExternalReferences()
