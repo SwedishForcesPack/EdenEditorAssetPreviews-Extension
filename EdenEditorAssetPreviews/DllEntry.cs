@@ -12,6 +12,7 @@ namespace EdenEditorAssetPreviews
 
         private static string _mod;
         private static string _outputPath;
+        private static string _patchesClass;
         private static string _prefix;
 
         /// <summary>
@@ -75,6 +76,17 @@ namespace EdenEditorAssetPreviews
                         _outputPath = args[1];
                         break;
                     }
+                case "setPatchesClass":
+                    {
+                        if (args.Length < 2)
+                        {
+                            response = "No patches class defined";
+                            break;
+                        }
+
+                        _patchesClass = args[1];
+                        break;
+                    }
                 case "setPrefix":
                     {
                         if (args.Length < 2)
@@ -123,6 +135,12 @@ namespace EdenEditorAssetPreviews
                             break;
                         }
 
+                        if (_patchesClass == null)
+                        {
+                            response = "No patches class defined";
+                            break;
+                        }
+
                         if (_prefix == null)
                         {
                             response = "No prefix defined";
@@ -132,7 +150,7 @@ namespace EdenEditorAssetPreviews
                         var imagesPath = Path.Combine(_outputPath, "ui");
                         Directory.CreateDirectory(_outputPath);
 
-                        ConfigGenerator configGenerator = new ConfigGenerator(_classesManager.GetAddons(), _classesManager.GetClasses(), _prefix);
+                        ConfigGenerator configGenerator = new ConfigGenerator(_classesManager.GetAddons(), _classesManager.GetClasses(), _patchesClass, _prefix);
                         File.WriteAllText(
                             Path.Combine(_outputPath, "config.cpp"),
                             configGenerator.ToString()

@@ -9,12 +9,14 @@ namespace EdenEditorAssetPreviews
     {
         private IEnumerable<string> _patches;
         private IEnumerable<string> _classes;
+        private string _patchesClass;
         private string _prefix;
 
-        public ConfigGenerator(IEnumerable<string> patches, IEnumerable<string> classes, string prefix)
+        public ConfigGenerator(IEnumerable<string> patches, IEnumerable<string> classes, string patchesClass, string prefix)
         {
             _patches = patches;
             _classes = classes;
+            _patchesClass = patchesClass;
             _prefix = prefix;
         }
 
@@ -31,7 +33,7 @@ namespace EdenEditorAssetPreviews
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("class CfgPatches");
             builder.AppendLine("{");
-            builder.AppendLine("  class AssetPreviews");
+            builder.AppendLine("  class " + _patchesClass);
             builder.AppendLine("  {");
             builder.AppendLine("    requiredVersion = 1.60;");
             builder.AppendLine("    requiredAddons[] = {");
