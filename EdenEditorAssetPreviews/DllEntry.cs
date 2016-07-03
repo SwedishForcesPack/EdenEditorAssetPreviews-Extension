@@ -150,7 +150,7 @@ namespace EdenEditorAssetPreviews
                         var imagesPath = Path.Combine(_outputPath, "ui");
                         Directory.CreateDirectory(_outputPath);
 
-                        ConfigGenerator configGenerator = new ConfigGenerator(_classesManager.GetAddons(), _classesManager.GetClasses(), _patchesClass, _prefix);
+                        ConfigGenerator configGenerator = new ConfigGenerator(_classesManager, _patchesClass, _prefix);
                         File.WriteAllText(
                             Path.Combine(_outputPath, "config.cpp"),
                             configGenerator.ToString()

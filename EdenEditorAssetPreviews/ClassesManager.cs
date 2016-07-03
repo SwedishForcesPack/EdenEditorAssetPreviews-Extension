@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace EdenEditorAssetPreviews
 {
     class ClassesManager
     {
         private List<string> _addons = new List<string>();
-        private List<string> _classes = new List<string>();
+        private List<ConfigClass> _classes = new List<ConfigClass>();
 
         public void AddAddon(string newAddon)
         {
@@ -20,12 +19,29 @@ namespace EdenEditorAssetPreviews
 
         public void AddClass(string newClass, string inheritedClass)
         {
-            _classes.Add(newClass);
+            _classes.Add(new ConfigClass(newClass, inheritedClass));
         }
 
-        public IEnumerable<string> GetClasses()
+        public IEnumerable<ConfigClass> GetClasses()
         {
             return _classes;
+        }
+
+        public IEnumerable<string> GetExternalReferences()
+        {
+            var externalReferences = new HashSet<string>();
+
+            foreach (ConfigClass configClass in _classes)
+            {
+                externalReferences.Add(configClass.Inherits);
+            }
+
+            foreach (ConfigClass configClass in _classes)
+            {
+                externalReferences.Remove(configClass.Name);
+            }
+
+            return externalReferences;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -7,15 +6,13 @@ namespace EdenEditorAssetPreviews
 {
     class ConfigGenerator
     {
-        private IEnumerable<string> _patches;
-        private IEnumerable<string> _classes;
+        private ClassesManager _classesManager;
         private string _patchesClass;
         private string _prefix;
 
-        public ConfigGenerator(IEnumerable<string> patches, IEnumerable<string> classes, string patchesClass, string prefix)
+        public ConfigGenerator(ClassesManager classesManager, string patchesClass, string prefix)
         {
-            _patches = patches;
-            _classes = classes;
+            _classesManager = classesManager;
             _patchesClass = patchesClass;
             _prefix = prefix;
         }
@@ -30,6 +27,8 @@ namespace EdenEditorAssetPreviews
 
         private string GenerateCfgPatches()
         {
+            var patches = _classesManager.GetAddons();
+
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("class CfgPatches");
             builder.AppendLine("{");
@@ -37,12 +36,14 @@ namespace EdenEditorAssetPreviews
             builder.AppendLine("  {");
             builder.AppendLine("    requiredVersion = 1.60;");
             builder.AppendLine("    requiredAddons[] = {");
-            if (_patches.Count() > 0)
+            if (patches.Count() > 0)
             {
-                builder.AppendLine("      \"" + String.Join("\",\n      \"", _patches.ToArray()) + "\"");
+                builder.AppendLine("      \"" + String.Join("\",\n      \"", patches.ToArray()) + "\"");
             }
             builder.AppendLine("    };");
             builder.AppendLine("  };");
+            builder.AppendLine("  units[] = {};");
+            builder.AppendLine("  weapons[] = {};");
             builder.AppendLine("};");
             return builder.ToString();
         }
@@ -53,11 +54,22 @@ namespace EdenEditorAssetPreviews
             builder.AppendLine("class CfgVehicles");
             builder.AppendLine("{");
 
-            foreach (string klass in _classes)
+            foreach (var reference in _classesManager.GetExternalReferences())
             {
-                builder.AppendLine("  class " + klass);
+                builder.AppendLine("  class " + reference + ";");
+            }
+
+            foreach (var configClass in _classesManager.GetClasses())
+            {
+                if (configClass.Inherits != null)
+                {
+                    builder.AppendLine("  class " + configClass.Name + " : " + configClass.Inherits);
+                } else
+                {
+                    builder.AppendLine("  class " + configClass.Name);
+                }
                 builder.AppendLine("  {");
-                builder.AppendLine("    editorPreview = \"" + _prefix + "\\ui\\" + klass + ".jpg\";");
+                builder.AppendLine("    editorPreview = \"" + _prefix + "\\ui\\" + configClass.Name + ".jpg\";");
                 builder.AppendLine("  };");
             }
 

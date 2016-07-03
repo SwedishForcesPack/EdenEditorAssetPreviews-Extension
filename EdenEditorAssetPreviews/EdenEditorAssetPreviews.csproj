@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassesManager.cs" />
+    <Compile Include="ConfigClass.cs" />
     <Compile Include="ConfigGenerator.cs" />
     <Compile Include="DllEntry.cs" />
     <Compile Include="ImagesManager.cs" />
