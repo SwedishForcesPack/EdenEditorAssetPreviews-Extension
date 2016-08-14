@@ -41,9 +41,9 @@ namespace EdenEditorAssetPreviews
                 builder.AppendLine("      \"" + String.Join("\",\n      \"", patches.ToArray()) + "\"");
             }
             builder.AppendLine("    };");
+            builder.AppendLine("    units[] = {};");
+            builder.AppendLine("    weapons[] = {};");
             builder.AppendLine("  };");
-            builder.AppendLine("  units[] = {};");
-            builder.AppendLine("  weapons[] = {};");
             builder.AppendLine("};");
             return builder.ToString();
         }
